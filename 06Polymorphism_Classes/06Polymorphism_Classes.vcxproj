@@ -139,7 +139,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Letter.cpp" />
+    <ClCompile Include="Package.cpp" />
+    <ClCompile Include="Postcard.cpp" />
+    <ClCompile Include="practice.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Parcel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Letter.h" />
+    <ClInclude Include="Package.h" />
+    <ClInclude Include="Parcel.h" />
+    <ClInclude Include="Postcard.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Roster.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
