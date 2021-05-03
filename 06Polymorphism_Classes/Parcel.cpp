@@ -24,7 +24,9 @@ using namespace std;
 //								mDistance - how far the parcel needds to travel
 // Returned:			none
 //***************************************************************************
-Parcel::Parcel(int trackID, string recipient, string sender, int weight, int distance) {
+Parcel::Parcel(int trackID, string recipient, string sender, 
+								int weight, int distance) {
+
 	mTrackID = trackID;
 	mSendTo = recipient;
 	mSendFrom = sender;
@@ -32,7 +34,6 @@ Parcel::Parcel(int trackID, string recipient, string sender, int weight, int dis
 	mDistance = distance;
 
 	mCost = 0.00;
-
 	mTime = 1;
 
 	mInsured = false;
@@ -46,14 +47,19 @@ Parcel::Parcel(int trackID, string recipient, string sender, int weight, int dis
 // Returned:		none
 //***************************************************************************
 void Parcel::print(ostream& rcOut) {
-	rcOut << "TID: " << mTrackID << "\t" << "From: " << mSendFrom << setw(10) << "To: " << mSendTo;
+	const string INSURED = "INSURED";
+	const string RUSHED = "RUSH";
+
+	rcOut << "TID: " << mTrackID << "\t";
+	cout << "From: " << left << setw(18) << mSendFrom;
+	cout << "To: " << left << setw(21) << mSendTo;
 
 	if (mInsured == true) {
-		cout << "\t" << INSURED;
+		cout << INSURED << "\t";
 	}
 
 	if (mRushed == true) {
-		cout << "\t" << RUSHED;
+		cout << RUSHED << "\t";
 	}
 }
 

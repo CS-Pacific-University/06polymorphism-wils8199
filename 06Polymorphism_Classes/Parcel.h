@@ -17,37 +17,32 @@
 using namespace std;
 
 class Parcel {
-public:
-	//Constructor
-	Parcel(int trackID = 0, string recipient = "", string sender = "", int weight = 0.00, int distance = 0.00);//should I initialize like this? is constr necessary?
+	public:
+		//Constructor
+		Parcel(int trackID = 0, string recipient = "", string sender = "",
+						int weight = 0.00, int distance = 0.00);
 	
-	void print(ostream&);
-	bool read(istream&);
+		virtual void print(ostream&);
+		virtual bool read(istream&);
 
-	double getCost();
-	int getTime();
-	int getTID();
+		double getCost();
+		int getTime();
+		int getTID();
 
-	void addInsurance();
-	void addRush();
+		virtual void addInsurance();
+		virtual void addRush();	
+
+	protected://These will be defined by functions in the subcalsses.
+		int mTrackID;
+		string mSendTo;
+		string mSendFrom;
+		int mWeight;//oz
+		int mDistance;//miles
 	
-private: //can or should these be protected??
-	int mTrackID;
-	string mSendTo;
-	string mSendFrom;
+		bool mInsured = false;
+		bool mRushed = false;
 
-protected: //can or should these be private??
-	//These will be defined by functions in the subcalsses.
-	int mWeight;//oz
-	int mDistance;//miles
-	
-	bool mInsured = false;
-	bool mRushed = false;
-
-	double mCost = 0.00;//$		//initialize here or Parcel.cpp?
-	int mTime = 1;//days
-
-	static const string INSURED = "INSURED";
-	static const string RUSHED = "RUSH";
+		double mCost = 0.00;//$		
+		int mTime = 1;//days
 };
 

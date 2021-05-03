@@ -18,22 +18,23 @@ using namespace std;
 //***************************************************************************
 // Function:			Letter
 // Description:		Grants Letter.cpp access to private data in Letter.h
-// Parameters:		mTrackID - the tracking number
-//								mSendTo - the address of the recipient
-//								mSendFrom - the address of the sender
-//								mWeight - the weight of the parcel
-//								mDistance - how far the parcel needds to travel
+// Parameters:		mTrackID		- the tracking number
+//								mSendTo			- the address of the recipient
+//								mSendFrom		- the address of the sender
+//								mWeight			- the weight of the parcel
+//								mDistance		- how far the parcel needds to travel
 // Returned:			none
 //***************************************************************************
-Letter::Letter(int trackID, string recipient, string sender, int weight, int distance)
-	: Parcel(trackID, recipient, sender, weight, distance) {//is it :parcel or :public parcel? identifieer?
+Letter::Letter(int trackID, string recipient, string sender, 
+								int weight, int distance)
+	: Parcel(trackID, recipient, sender, weight, distance) {
+	
+	const double mPRICEPEROZ = 0.45;//$ per oz
+	const int mSPEED = 100;//miles per day
 	
 	mCost = mPRICEPEROZ * weight;
 
-	mTime = (distance / mSPEED);
-
-	mInsured = false;
-	mRushed = false;
+	mTime = (distance / mSPEED) + mTime;
 }
 
 //***************************************************************************
@@ -43,37 +44,25 @@ Letter::Letter(int trackID, string recipient, string sender, int weight, int dis
 // Returned:		none
 //***************************************************************************
 void Letter::print(ostream& rcOut) {
-	this->print(rcOut);//is this correct???
+	Parcel::print(rcOut);
 }
 
 //***************************************************************************
 // Function:		read
 // Description: assigns sequenced data into Letter members
 // Parameters:	rcIn - the istream operator
-// Returned:		none
+// Returned:		the boolean state of the function
 //***************************************************************************
 bool Letter::read(istream& rcIn) {
-	this->read(rcIn);
-}
+	bool wasRead = Parcel::read(rcIn);
+	const double mPRICEPEROZ = 0.45;//$ per oz
+	const int mSPEED = 100;//miles per day
 
-//***************************************************************************
-// Function:		getCost
-// Description: Returns the cost of mailing the Letter
-// Parameters:	none
-// Returned:		the cost to ship the Letter
-//***************************************************************************
-double Letter::getCost() {
-	return mCost;
-}
+	mCost = mPRICEPEROZ * mWeight;
 
-//***************************************************************************
-// Function:		getTime
-// Description: Returns the time it will take mailing the Letter
-// Parameters:	none
-// Returned:		the time it will take to ship the Letter
-//***************************************************************************
-int Letter::getTime() {
-	return mTime;
+	mTime = (mDistance / mSPEED) + mTime;
+
+	return wasRead;
 }
 
 //***************************************************************************
@@ -83,9 +72,19 @@ int Letter::getTime() {
 // Returned:		none
 //***************************************************************************
 void Letter::addInsurance() {
-	mInsured = true;
-	mCost = mINSURANCERATE + mCost;
-	cout << "Added Insurance for $" << mINSURANCERATE;
+	const double mINSURANCERATE = 0.45;//$, flat
+	
+	if (mInsured == false) {
+		mInsured = true;
+
+		cout << "Added Insurance for $" << mINSURANCERATE;
+
+		mCost = mINSURANCERATE + mCost;
+	}
+	else {
+		cout << "Letter has already been insured.";
+		//there was no error handling specified if user chooses to insure twice
+	}
 }
 
 //***************************************************************************
@@ -95,7 +94,17 @@ void Letter::addInsurance() {
 // Returned:		none
 //***************************************************************************
 void Letter::addRush() {
-	mRushed = true;
-	mCost = mCost + (mRUSHPERCENT * mCost);
-	cout << "Added Rush for $" << (mRUSHPERCENT * mCost);
+	const double mRUSHPERCENT = 0.10;//%of current cost
+
+	if (mRushed == false) {
+		mRushed = true;
+
+		cout << "Added Rush for $" << (mRUSHPERCENT * mCost);
+
+		mCost = mCost + (mRUSHPERCENT * mCost);
+	}
+	else {
+		cout << "Letter has already been rushed.";
+		//there was no error handling specified if user chooses to rush twice
+	}
 }

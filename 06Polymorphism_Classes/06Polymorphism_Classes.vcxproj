@@ -142,7 +142,6 @@
     <ClCompile Include="Letter.cpp" />
     <ClCompile Include="Package.cpp" />
     <ClCompile Include="Postcard.cpp" />
-    <ClCompile Include="practice.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Parcel.cpp" />
   </ItemGroup>

@@ -18,24 +18,25 @@ using namespace std;
 //***************************************************************************
 // Function:			Postcard
 // Description:		Grants Postcard.cpp access to private data in Postcard.h
-// Parameters:		mTrackID - the tracking number
-//								mSendTo - the address of the recipient
-//								mSendFrom - the address of the sender
-//								mWeight - the weight of the parcel
-//								mDistance - how far the parcel needds to travel
+// Parameters:		mTrackID		- the tracking number
+//								mSendTo			- the address of the recipient
+//								mSendFrom		- the address of the sender
+//								mWeight			- the weight of the parcel
+//								mDistance		- how far the parcel needds to travel
 // Returned:			none
 //***************************************************************************
-Postcard::Postcard(int trackID, string recipient, string sender, int weight, int distance, string message)
+Postcard::Postcard(int trackID, string recipient, string sender, 
+										int weight, int distance, string message)
 	: Parcel(trackID, recipient, sender, weight, distance) {
 
+	const double mPRICE = 0.15;//$, flat
+	const int mSPEED = 10;//miles per day
+	
 	mMessage = message;
 
 	mCost = mPRICE;
 
-	mTime = (distance / mSPEED);
-
-	mInsured = false;
-	mRushed = false;
+	mTime = mTime + (distance / mSPEED);
 }
 
 //***************************************************************************
@@ -45,39 +46,29 @@ Postcard::Postcard(int trackID, string recipient, string sender, int weight, int
 // Returned:		none
 //***************************************************************************
 void Postcard::print(ostream& rcOut) {
-	this->print(rcOut);//is this correct???
+	Parcel::print(rcOut);
+
+	cout << mMessage;
 }
 
 //***************************************************************************
 // Function:		read
 // Description: assigns sequenced data into Postcard members
 // Parameters:	rcIn - the istream operator
-// Returned:		none
+// Returned:		the boolean state of the function
 //***************************************************************************
 bool Postcard::read(istream& rcIn) {
-	this->read(rcIn);
+	bool wasRead = Parcel::read(rcIn);
+	const double mPRICE = 0.15;//$, flat
+	const int mSPEED = 10;//miles per day
 
+	mCost = mPRICE;
+
+	mTime = mTime + (mDistance / mSPEED);
+	
 	rcIn >> mMessage;
-}
 
-//***************************************************************************
-// Function:		getCost
-// Description: Returns the cost of mailing the Postcard
-// Parameters:	none
-// Returned:		the cost to ship the Postcard
-//***************************************************************************
-double Postcard::getCost() {
-	return mCost;
-}
-
-//***************************************************************************
-// Function:		getTime
-// Description: Returns the time it will take mailing the Postcard
-// Parameters:	none
-// Returned:		the time it will take to ship the Postcard
-//***************************************************************************
-int Postcard::getTime() {
-	return mTime;
+	return wasRead;
 }
 
 //***************************************************************************
@@ -87,9 +78,19 @@ int Postcard::getTime() {
 // Returned:		none
 //***************************************************************************
 void Postcard::addInsurance() {
-	mInsured = true;
-	mCost = mINSURANCERATE + mCost;
-	cout << "Added Insurance for $" << mINSURANCERATE;
+	const double mINSURANCERATE = 0.15;//$, flat
+
+	if (mInsured == false) {
+		mInsured = true;
+
+		cout << "Added Insurance for $" << mINSURANCERATE;
+
+		mCost = mINSURANCERATE + mCost;
+	}
+	else {
+		cout << "Postcard has already been insured.";
+		//there was no error handling specified if user chooses to insure twice
+	}
 }
 
 //***************************************************************************
@@ -99,7 +100,17 @@ void Postcard::addInsurance() {
 // Returned:		none
 //***************************************************************************
 void Postcard::addRush() {
-	mRushed = true;
-	mCost = mCost + mRUSHRATE;
-	cout << "Added Rush for $" << mRUSHRATE;
+	const double mRUSHRATE = 0.25;//$, flat
+
+	if (mRushed == false) {
+		mRushed = true;
+
+		cout << "Added Rush for $" << mRUSHRATE;
+
+		mCost = mCost + mRUSHRATE;
+	}
+	else {
+		cout << "Postcard has already been insured.";
+		//there was no error handling specified if user chooses to insure twice
+	}
 }

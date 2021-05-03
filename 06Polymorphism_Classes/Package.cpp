@@ -18,17 +18,23 @@ using namespace std;
 //***************************************************************************
 // Function:			Package
 // Description:		Grants Package.cpp access to private data in Package.h
-// Parameters:		mTrackID - the tracking number
-//								mSendTo - the address of the recipient
-//								mSendFrom - the address of the sender
-//								mWeight - the weight of the parcel
-//								mDistance - how far the parcel needds to travel
+// Parameters:		mTrackID		- the tracking number
+//								mSendTo			- the address of the recipient
+//								mSendFrom		- the address of the sender
+//								mWeight			- the weight of the parcel
+//								mDistance		- how far the parcel needds to travel
 // Returned:			none
 //***************************************************************************
-Package::Package(int trackID, string recipient, string sender, int weight, int distance, int volume)
+Package::Package(int trackID, string recipient, string sender, 
+									int weight, int distance, int volume)
 	: Parcel(trackID, recipient, sender, weight, distance) {
 	mVolume = volume;
 
+	const int mSIZE = 100;//volume
+	const int mOVERTIME = 1000;//miles
+	const double mPRICESMALL = 12;//$, flat
+	const double mPRICEBIG = 20;//$, flat
+	
 	if (mVolume > mSIZE) {
 		mCost = mPRICEBIG;
 	}
@@ -38,15 +44,11 @@ Package::Package(int trackID, string recipient, string sender, int weight, int d
 
 	if (mDistance > mOVERTIME) {
 		mTime = 2;//IS THIS A MAGIC CONSTANT?
-		mOvernight = false;
 	}
 	else {
 		mTime = 1;
-		mOvernight = true;
 	}
 
-	mInsured = false;
-	mRushed = false;
 }
 
 //***************************************************************************
@@ -56,39 +58,45 @@ Package::Package(int trackID, string recipient, string sender, int weight, int d
 // Returned:		none
 //***************************************************************************
 void Package::print(ostream& rcOut) {
-	this->print(rcOut);//is this correct???
+	const string mOVERNIGHT = "OVERNIGHT!";
+
+	Parcel::print(rcOut);
+
+	cout << mOVERNIGHT;
 }
 
 //***************************************************************************
 // Function:		read
 // Description: assigns sequenced data into Package members
 // Parameters:	rcIn - the istream operator
-// Returned:		none
+// Returned:		the boolean state of the function
 //***************************************************************************
 bool Package::read(istream& rcIn) {
-	this->read(rcIn);
+	bool wasRead = Parcel::read(rcIn);
+	const int mSIZE = 100;//volume
+	const int mOVERTIME = 1000;//miles
+	const double mPRICESMALL = 12;//$, flat
+	const double mPRICEBIG = 20;//$, flat
+	const int FARTIME = 2;//day
+	const int NEARTIME = 1;//day
 
 	rcIn >> mVolume;
-}
+	
+	if (mVolume > mSIZE) {
+		mCost = mPRICEBIG;
+	}
+	else {
+		mCost = mPRICESMALL;
+	}
 
-//***************************************************************************
-// Function:		getCost
-// Description: Returns the cost of mailing the Package
-// Parameters:	none
-// Returned:		the cost to ship the Package
-//***************************************************************************
-double Package::getCost() {
-	return mCost;
-}
+	if (mDistance > mOVERTIME) {
+		mTime = FARTIME;//IS THIS A MAGIC CONSTANT?
+	}
+	else {
+		mTime = NEARTIME;
+	}
 
-//***************************************************************************
-// Function:		getTime
-// Description: Returns the time it will take mailing the Package
-// Parameters:	none
-// Returned:		the time it will take to ship the Package
-//***************************************************************************
-int Package::getTime() {
-	return mTime;
+	return wasRead;
 }
 
 //***************************************************************************
@@ -98,9 +106,19 @@ int Package::getTime() {
 // Returned:		none
 //***************************************************************************
 void Package::addInsurance() {
-	mInsured = true;
-	mCost = (mINSURANCEPERCENT * mCost) + mCost;
-	cout << "Added Insurance for $" << (mINSURANCEPERCENT * mCost);
+	const double mINSURANCEPERCENT = 0.25;//$, percent of current const
+
+	if (mInsured == false) {
+		mInsured = true;
+
+		cout << "Added Insurance for $" << (mINSURANCEPERCENT * mCost);
+
+		mCost = (mINSURANCEPERCENT * mCost) + mCost;
+	}
+	else {
+		cout << "Package has already been insured.";
+		//there was no error handling specified if user chooses to insure twice
+	}
 }
 
 //***************************************************************************
@@ -110,7 +128,17 @@ void Package::addInsurance() {
 // Returned:		none
 //***************************************************************************
 void Package::addRush() {
-	mRushed = true;
-	mCost = (mRUSHPERCENT * mCost) + mCost;
-	cout << "Added Rush for $" << (mRUSHPERCENT * mCost);
+	const double mRUSHPERCENT = 0.75;//$, percent of current cost
+
+	if (mRushed == false) {
+		mRushed = true;
+
+		cout << "Added Rush for $" << (mRUSHPERCENT * mCost);
+
+		mCost = (mRUSHPERCENT * mCost) + mCost;
+	}
+	else {
+		cout << "Package has already been insured.";
+		//there was no error handling specified if user chooses to insure twice
+	}
 }
